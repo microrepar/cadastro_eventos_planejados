@@ -1,0 +1,8 @@
+cookie:
+  expiry_days: 3
+  key: some_signature_key # Must be string
+  name: agenda_secretarias_pmmc
+credentials:
+  usernames: {}
+preauthorized:
+  emails: []
