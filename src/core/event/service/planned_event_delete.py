@@ -1,5 +1,6 @@
 from src.core import usecase_map
-from src.core.event import PlannedEvent, PlannedEventRepository
+from ..model.planned_event import PlannedEvent
+from .planned_event_repository import PlannedEventRepository
 from src.core.shared.application import Result
 from src.core.shared.usecase import UseCase
 
