@@ -1,3 +1,5 @@
+import datetime
+
 from src.core import usecase_map
 from src.core.shared.application import Result
 from src.core.shared.usecase import UseCase
@@ -18,6 +20,8 @@ class UserRegistry(UseCase):
         if not isinstance(entity, User):
             result.msg = f'{entity.__class__.__name__} is not a User Entity.'
 
+        entity.status = 'active'
+
         result.msg = entity.validate_data()
 
         if result.qty_msg():
@@ -29,6 +33,12 @@ class UserRegistry(UseCase):
             result.entities = new_user
             return result
         except Exception as error:
-            result.msg = str(error)
+            if 'user_email_key' in str(error) or 'failed: user.email' in str(error):
+                result.msg = f'You cannot regtry email={entity.email} because it already exists.'
+            elif 'user_username_key' in str(error) or 'user.username' in str(error):
+                result.msg = f'You cannot regtry username={entity.username} because it already exists.'
+            else:
+                result.msg = str(error)
+            
             result.entities = entity
             return result

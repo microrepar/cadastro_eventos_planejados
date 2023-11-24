@@ -6,8 +6,8 @@ from src.core.user import User
 from .user_repository import UserRepository
 
 
-@usecase_map('/user/update')
-class UserUpdate(UseCase):
+@usecase_map('/user/find_by_field')
+class UserFindByFieldService(UseCase):
 
     def __init__(self, repository: UserRepository):
         self.repository = repository
@@ -15,20 +15,13 @@ class UserUpdate(UseCase):
     def execute(self, entity: User) -> Result:
         result = Result()
         
-        ###################################
-        # Add your implementation here
-        result.msg = 'UserGetAll Service is not implemented'
-        ###################################
-        if result.qty_msg():
-            result.entities = entity
-            return result
         try:
-            updated_user = self.repository.update(entity)
+            updated_user = self.repository.find_by_field(entity)
             result.entities = updated_user
             return result
         except Exception as error:
             result.msg = str(error)
             result.entities = entity
             return result
-        ###################################
+        
 

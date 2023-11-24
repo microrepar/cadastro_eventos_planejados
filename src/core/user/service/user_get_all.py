@@ -25,11 +25,13 @@ class UserGetAll(UseCase):
         
         try:
             user_list = self.repository.get_all(entity)
+
+            user_list = [u for u in user_list if u.status != 'removed']
             
             if len(user_list) > 0:
                 result.entities = user_list
             else:
-                result.entities = entity
+                result.entities = user_list
                 result.msg = 'There are no users in database.'
 
             return result

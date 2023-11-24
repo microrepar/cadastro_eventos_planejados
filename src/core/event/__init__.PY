@@ -1,2 +1,2 @@
-from src.core.event.model.event import Event
-from src.core.event.service.event_repository import EventRepository
+from src.core.event.model.planned_event import PlannedEvent
+from src.core.event.service.planned_event_repository import PlannedEventRepository

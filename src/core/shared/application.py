@@ -1,11 +1,10 @@
 """application module
 """
 
-from typing import List
 from collections.abc import Sequence
+from typing import Any, Iterable, List
 
 from .entity import Entity
-
 
 entity_list = List[Entity]
 list_str = List[str]
@@ -14,8 +13,9 @@ list_str = List[str]
 class Result:
 
     def __init__(self):
-        self._msg = list()
-        self._entities: entity_list = list()
+        self._msg      : List[str] = list()
+        self._entities : List[str] = list()
+        self._objects  : List[Any] = list()
         self.form = None
 
     @property
@@ -29,6 +29,18 @@ class Result:
         elif isinstance(message, Sequence):
             self._msg += list(message)
 
+    @property
+    def objects(self) -> Any:
+        return self._objects
+    
+    @objects.setter
+    def objects(self, objs = List[Any]):
+        if isinstance(objs, Iterable):
+            self._objects += list(objs)
+        else:
+            self._objects += list([objs])
+
+        
     @property
     def entities(self) -> entity_list:
         return self._entities
@@ -53,4 +65,5 @@ class Result:
         return {
             'messages': self._msg,
             'entities': self._entities,
+            'objects': self._objects,
         }
