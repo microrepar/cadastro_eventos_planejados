@@ -1,5 +1,5 @@
 data_base/
 *__pycache__*
 secrets.toml
-.env
+
 
