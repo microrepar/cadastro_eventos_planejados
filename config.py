@@ -25,14 +25,18 @@ class Config:
         DB_FRAMEWORK = st.secrets.get('DB_FRAMEWORK')
 
     else:
-        DATABASE_URL   = os.getenv('DATABASE_URL')
-        DB_DATABASE    = os.getenv('DB_DATABASE')
-        DB_DIALECT     = os.getenv('DB_DIALECT')
-        DB_HOST        = os.getenv('DB_HOST')
-        DB_PASSWORD    = os.getenv('DB_PASSWORD')
-        DB_PORT        = os.getenv('DB_PORT')
-        DB_SCHEMA      = os.getenv('DB_SCHEMA')
-        DB_USER        = os.getenv('DB_USER')
+        DATABASE_URL = os.getenv('DATABASE_URL')
+        DB_DATABASE  = os.getenv('DB_DATABASE')
+        DB_DIALECT   = os.getenv('DB_DIALECT')
+        DB_HOST      = os.getenv('DB_HOST')
+        DB_PASSWORD  = os.getenv('DB_PASSWORD')
+        DB_PORT      = os.getenv('DB_PORT')
+        DB_SCHEMA    = os.getenv('DB_SCHEMA')
+        DB_USER      = os.getenv('DB_USER')
+
+        HOST         = os.getenv('HOST')
+        PORT         = os.getenv('PORT')
+        PASSWORD     = os.getenv('PASSWORD')
 
         DB_FRAMEWORK = os.getenv('DB_FRAMEWORK')
 
