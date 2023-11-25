@@ -1,9 +1,8 @@
 import abc
-from typing import Protocol, runtime_checkable, List
+from typing import List, Protocol, runtime_checkable
 
 from src.core.event import PlannedEvent
 from src.core.shared.repository import Repository
-
 
 
 @runtime_checkable

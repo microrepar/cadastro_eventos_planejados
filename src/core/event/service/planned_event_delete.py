@@ -1,9 +1,9 @@
 from src.core import usecase_map
+from src.core.event import PlannedEvent
 from src.core.shared.application import Result
 from src.core.shared.usecase import UseCase
 
-from ..model.planned_event import PlannedEvent
-from ..service.planned_event_repository import PlannedEventRepository
+from .planned_event_repository import PlannedEventRepository
 
 
 @usecase_map('/planned_event/delete')
