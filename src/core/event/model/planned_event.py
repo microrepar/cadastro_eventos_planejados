@@ -82,23 +82,31 @@ class PlannedEvent(Entity):
             value = getattr(self, attr, None)
             if value is None:
                 messages.append(
-                    f'O campo "{attr}" é obrigatório o preenchimento'
+                    f'\tO campo "{attr}" é obrigatório o preenchimento'
                 )
             else:
                 value = date_to_string(value)
                 value = value.strip()
                 if value == '':
                     messages.append(
-                        f'O campo "{attr}" é obrigatório o preenchimento'
+                        f'\tO campo "{attr}" é obrigatório o preenchimento'
                     )
 
         hoje = datetime.datetime.now().date()
+        
+        try:
+            if hoje >= self.data_inicio \
+                    or hoje >= self.data_fim \
+                    or self.data_inicio > self.data_fim:
+                messages.append(
+                    f'\tInconsistências nas datas: A data início e fim não podem ser anteriores ou iguais a data atual, '
+                    'e a data fim não pode ser anterior a data início'
+                )
+            
+        except TypeError as error:
+            messages.append(f'\tInconsistências nas datas: As datas de início e fim são obrigatórias.')
 
-        if hoje >= self.data_inicio \
-                or hoje >= self.data_fim \
-                or self.data_inicio > self.data_fim:
-            messages.append(
-                f'Inconsistências nas datas: A data início e fim não podem ser anteriores ou iguais a data atual, '
-                'e a data fim não pode ser anterior a data início'
-            )
+        if len(messages) != 0:
+            messages.insert(0, '**Erro de preenchimento:** O formulário apresentou os seguintes problemas:')
+
         return messages
