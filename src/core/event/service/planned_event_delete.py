@@ -1,12 +1,13 @@
 from src.core import usecase_map
-from ..model.planned_event import PlannedEvent
-from .planned_event_repository import PlannedEventRepository
 from src.core.shared.application import Result
 from src.core.shared.usecase import UseCase
 
+from ..model.planned_event import PlannedEvent
+from ..service.planned_event_repository import PlannedEventRepository
+
 
 @usecase_map('/planned_event/delete')
-class PlannedEventRemove(UseCase):
+class PlannedEventDelete(UseCase):
     
     def __init__(self, repository: PlannedEventRepository):
         self.repository = repository
