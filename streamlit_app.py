@@ -80,8 +80,8 @@ if authentication_status:
 
     if username == 'admin':
         show_pages(
-            [   Page("streamlit_app.py", "PLANEJAMENTO DE EVENTOS", "📅"),
-                Page("src/external/app_pages/eventos_cadastrados.py", "EVENTOS CADASTRADOS", "📄"),
+            [   Page("streamlit_app.py", "CAD-EVENTOS PMMC", "📅"),
+                Page("src/external/app_pages/eventos_cadastrados.py", "Eventos Cadastrados", "📄"),
                 # Page("src/external/app_pages/calendar.py", "Calendar", "🗓️"),
                 # Section(name="Notebooks", icon=":books:"),
                 # # Can use :<icon-name>: or the actual icon 
@@ -91,32 +91,31 @@ if authentication_status:
         )
     else:
         show_pages(
-            [Page("streamlit_app.py", "PLANEJAMENTO DE EVENTOS", "📅"),]
+            [Page("streamlit_app.py", "CAD-EVENTOS PMMC", "📅"),]
         )
 
     add_page_title()
 
-    # with st.form("my_form"):   
-    #     st.write("Formulário de Cadastro dos Eventos Planejados")
-    #     nome_evento = st.text_input('Nome do evento:red[*]')
-    #     organizador = st.text_input('Organizador', value=name, disabled=True)
-        
-    #     cb_nova_tematica = st.checkbox('Adicionar nova temática')
-    #     if cb_nova_tematica:
-    #         tematica_evento = st.text_input('Temática do Evento:red[*]', placeholder='Nome do tema como: Dia das Crianças ou Dia da Consciência Negra, etc...')
-    #     else:
-    #         tematica_evento = st.selectbox('Temática do Evento:red[*]',[], placeholder='Não encontrou a temática, marque a caixa acima do form e adicione uma nova')
-
-    #     col1, col2 = st.columns(2)
-    #     data_inicio = col1.date_input('**Data início**:red[*]', None, format='DD/MM/YYYY')
-    #     data_fim = col2.date_input('**Data fim**:red[*]', None, format='DD/MM/YYYY')
-    #     descricao = st.text_area('Descrição', placeholder='Breve descrição sobre o que está planejado para o evento')
-        
-
-    #     # Every form must have a submit button.
-    #     submitted = st.form_submit_button("REGISTRAR NOVO EVENTO", type="primary", use_container_width=True)
-    
     st.divider()
+    #############################################################
+    ### GET ALL TEMATICA ###
+    #############################################################
+    controller = Controller()
+    request    = {'resource': '/planned_event/get_all_tematicas'}
+    resp       = controller(request=request)
+    #############################################################
+    messages = resp.get('messages', [])
+    tematica_list = resp.get('objects', [])
+    # st.write(resp)
+    #############################################################
+    if tematica_list:
+        msg_placeholder = ('Selecione uma temática ou adicione '
+                           'uma nova marcando a caixa acima')
+    else:
+        msg_placeholder = ('Atenção! Não há temáticas cadastradas, '
+                           'adicione uma marcando a caixa acima')
+    #############################################################
+
     with st.container():
         st.markdown("### Formulário de Cadastro dos Eventos Planejados")
         nome_evento = st.text_input('**Nome do evento**:red[*]')
@@ -126,23 +125,7 @@ if authentication_status:
         if col1.checkbox('Nova temática'):
             tematica_evento = st.text_input('**Adicione a Temática do Evento**:red[*]', 
                                             placeholder='Adicione aqui a temática, exemplo: "Dia das Crianças" ou "Dia da Consciência Negra", etc...')
-        else:
-            #############################################################
-            ### GET ALL TEMATICA ###
-            #############################################################
-            controller = Controller()
-            request    = {'resource': '/planned_event/get_all_tematicas'}
-            resp       = controller(request=request)
-            #############################################################
-            messages = resp.get('messages', [])
-            tematica_list = resp.get('objects', [])
-            # st.write(resp)
-            #############################################################
-            if tematica_list:
-                msg_placeholder = 'Selecione uma temática ou adicione uma nova marcando a caixa acima'
-            else:
-                msg_placeholder = 'Atenção! Não há temáticas cadastradas, adicione uma marcando a caixa acima'
-
+        else:            
             tematica_evento = st.selectbox('**Selecione a Temática do Evento**:red[*]', 
                                            tematica_list, 
                                            index=None, 
@@ -155,10 +138,8 @@ if authentication_status:
         
 
         # Every form must have a submit button.
-        submitted = st.button("REGISTRAR NOVO EVENTO", type="primary", use_container_width=True)
+        submitted = st.button("💾 SALVAR", type="primary", use_container_width=True)
 
-        # Finalizando o contorno personalizado
-        st.write("</div>", unsafe_allow_html=True)
 
 
     if submitted:
@@ -180,14 +161,14 @@ if authentication_status:
         messages = resp['messages']
         
         if messages:
-            st.error('\n\n'.join(messages), icon='🚨')
+            st.error('\n  -'.join(messages), icon='🚨')
         else:
             st.success(f'O Evento **{nome_evento}** foi cadastrado com sucesso.')
         #############################################################
 
 
     st.divider()
-    st.markdown('### Eventos planejados cadastrados')
+    st.markdown('### Eventos Cadastrados')
     #############################################################
     ### GET ALL PLANNEDEVENT ###
     #############################################################
@@ -207,18 +188,46 @@ if authentication_status:
 
         editor_config = {
             'nome'        : st.column_config.TextColumn('Nome do evento', required=True),
-            'tematica'    : st.column_config.TextColumn('Temática do evento'),
-            'data_inicio' : st.column_config.DateColumn('Data início', format='DD/MM/YYYY'),
-            'data_fim'    : st.column_config.DateColumn('Data fim', format='DD/MM/YYYY'),
+            'tematica'    : st.column_config.SelectboxColumn('Temática do evento', options=tematica_list, required=True),
+            'data_inicio' : st.column_config.DateColumn('Data início', format='DD/MM/YYYY', required=True),
+            'data_fim'    : st.column_config.DateColumn('Data fim', format='DD/MM/YYYY', required=True),
             'descricao'   : st.column_config.TextColumn('Breve descrição'),
         }
 
         if 'flag_reset' not in st.session_state:
             st.session_state.flag_reset = False
-
-
-        if st.button('Reset', type='primary', key='reset_update'):
+        
+        if 'flag_btn_update' not in st.session_state:
+            st.session_state.flag_btn_update = False
+        
+        if 'flag_btn_delete' not in st.session_state:
+            st.session_state.flag_btn_delete = False
+        
+        def on_click_reset_data_editor(*args, **kwargs):
             st.session_state.flag_reset = not st.session_state.flag_reset
+            if kwargs.get('key') == 'edited_rows':
+                st.session_state[editor_key][kwargs['key']] = {}
+            elif kwargs.get('key') == 'deleted_rows':
+                st.session_state[editor_key][kwargs['key']] = []
+        
+        def on_click_btn_update(*args, **kwargs):
+            st.session_state.flag_btn_update = kwargs.get('flag', True)
+        
+        def on_click_btn_delete(*args, **kwargs):
+            st.session_state.flag_btn_delete = True
+
+        placeholder_text_area = st.empty()
+        cols = st.columns(3)
+        with cols[0]:
+            placeholder_btn_reset_update = st.empty()
+        with cols[1]:
+            placeholder_btn_cancelar = st.empty()
+
+        placeholder_btn_reset_update.button('Reset', 
+                                               type='primary',
+                                               on_click=on_click_reset_data_editor,
+                                               use_container_width=True,
+                                               key='reset_update')
         
         placeholder_alert_empty = st.empty()
         placeholder_error_empty = st.empty()
@@ -234,6 +243,8 @@ if authentication_status:
                                                         use_container_width=True,
                                                         column_config=editor_config,
                                                         disabled=disable_fields,
+                                                        on_change=on_click_btn_update,
+                                                        kwargs={'flag': False},
                                                         key=editor_key)                
         else:
             editor_key = 'update_data'
@@ -242,62 +253,177 @@ if authentication_status:
                                                         use_container_width=True,
                                                         column_config=editor_config,
                                                         disabled=disable_fields,
+                                                        on_change=on_click_btn_update,
+                                                        kwargs={'flag': False},
                                                         key=editor_key)
         
-        # st.write(st.session_state[editor_key])
-        
-        if st.session_state[editor_key].get('deleted_rows'):  
+        if st.session_state[editor_key].get('deleted_rows'):
             
-            flag_contem_admin = False
-            
-            error_messages = []
-            alert_messages = []            
-            nome_evento_list = list()
-            for index in st.session_state[editor_key]['deleted_rows']:
-                
-                nome_evento = df.iloc[index]['nome']                                
-                
-            
-                plannedevent_id = df.iloc[index]['id']                    
-                #############################################################
-                ### DELETE PLANNEDEVENT BY ID ###
-                #############################################################
-                controller = Controller()
-                request = {'resource': '/planned_event/delete',
-                              'plannedevent_id_': plannedevent_id}
-                resp = controller(request=request)
-                #############################################################
-                messages = resp['messages']
-                entities = resp['entities']
-
-                if messages:
-                    error_messages += messages
-                else:
+            if not st.session_state.flag_btn_delete:
+                nome_evento_list = list()
+                for index in st.session_state[editor_key]['deleted_rows']:
+                    nome_evento = df.iloc[index]['nome']
                     nome_evento_list.append(nome_evento)
-                #############################################################
             
-            if error_messages:
-                placeholder_error_empty.error('\n\n'.join(error_messages), icon='🚨')
+                placeholder_text_area.text_area('Evento(s) para exclusão', value='\n'.join(nome_evento_list))
             
-            if alert_messages:
-                placeholder_alert_empty.warning('\n\n'.join(alert_messages), icon='⚠️')
+                placeholder_btn_reset_update.button(f'Confirmar Exclusão', 
+                                                    type='primary',
+                                                    on_click=on_click_btn_delete,
+                                                    use_container_width=True,
+                                                    key='btn_delete')
+                
+                placeholder_btn_cancelar.button('Cancelar',
+                                                type='primary',
+                                                on_click=on_click_reset_data_editor,
+                                                kwargs={'key':'deleted_rows'},
+                                                use_container_width=True,
+                                                key='reset_update_concluir')
+                                                        
+            if st.session_state.flag_btn_delete:
+                st.session_state.flag_btn_delete = False
+                
+                error_messages = []
+                alert_messages = []            
+                nome_evento_list = list()
+                for index in st.session_state[editor_key]['deleted_rows']:
+                    
+                    nome_evento = df.iloc[index]['nome']                                
+                    
+                
+                    plannedevent_id = df.iloc[index]['id']                    
+                    #############################################################
+                    ### DELETE PLANNEDEVENT BY ID ###
+                    #############################################################
+                    controller = Controller()
+                    request = {'resource': '/planned_event/delete',
+                                'plannedevent_id_': plannedevent_id}
+                    resp = controller(request=request)
+                    #############################################################
+                    messages = resp['messages']
+                    entities = resp['entities']
 
-            if nome_evento_list:
-                placeholder_success_empty.success(f'Foram removidos os seguintes eventos: {", ".join(nome_evento_list)}')
+                    if messages:
+                        error_messages += messages
+                    else:
+                        nome_evento_list.append(nome_evento)
+                    #############################################################
+                
+                if error_messages:
+                    placeholder_error_empty.error('\n  -'.join(error_messages), icon='🚨')
+                
+                if alert_messages:
+                    placeholder_alert_empty.warning('\n  -'.join(alert_messages), icon='⚠️')
+
+                if nome_evento_list:
+                    placeholder_success_empty.success(f'Foram removidos os seguintes eventos: {", ".join(nome_evento_list)}')
 
 
-            st.session_state[editor_key]['deleted_rows'] = []
+                st.session_state[editor_key]['deleted_rows'] = []
+                
         
-        
-        if st.session_state[editor_key].get('edited_rows'):                
-            placeholder_alert_empty.error('Changing records via the board is not allowed, please use the form to add new users.', icon='🚨')
+        if st.session_state[editor_key].get('edited_rows'):
+            # st.write(st.session_state[editor_key])
+
+            if not st.session_state.flag_btn_update: 
+                placeholder_btn_reset_update.button('Salvar Alterações', 
+                                                    type='primary',
+                                                    on_click=on_click_btn_update,
+                                                    use_container_width=True,
+                                                    key='btn_update')
+
+                placeholder_btn_cancelar.button('Cancelar',
+                                                type='primary',
+                                                on_click=on_click_reset_data_editor,
+                                                kwargs={'key':'edited_rows'},
+                                                use_container_width=True,
+                                                key='reset_update_concluir')
+                                                            
+            if st.session_state.flag_btn_update:
+                st.session_state.flag_btn_update = False
+                
+                evento_list = []
+                error_messages = []
+                
+                edited_rows = st.session_state[editor_key].get('edited_rows')
+                
+                for index, value in st.session_state[editor_key]['edited_rows'].items():                    
+                    id_evento          = df.iloc[index]['id']
+                    nome_evento        = value.get('nome') or df.iloc[index]['nome']
+                    tematica_evento    = value.get('tematica') or df.iloc[index]['tematica']
+                    data_inicio_evento = value.get('data_inicio') or df.iloc[index]['data_inicio']
+                    data_fim_evento    = value.get('data_fim') or df.iloc[index]['data_fim']
+                    descricao_evento   = value.get('descricao') or df.iloc[index]['descricao']
+
+                    #############################################################
+                    ### DELETE USER BY ID ###
+                    #############################################################
+                    controller = Controller()
+                    request    = {
+                        'resource'         : '/plannedevent/update_detail',
+                        'plannedevent_id_'         : id_evento,                        
+                        'plannedevent_nome'        : nome_evento,
+                        'plannedevent_tematica'    : tematica_evento,
+                        'plannedevent_data_inicio' : data_inicio_evento,
+                        'plannedevent_data_fim'    : data_fim_evento,
+                        'plannedevent_descricao'   : descricao_evento,
+                    }
+                    resp = controller(request=request)
+                    #############################################################
+                    messages = resp['messages']
+                    entities = resp['entities']
+
+                    if messages:
+                        error_messages += messages
+                    else:
+                        evento_list.append(nome_evento)
+
+                    #############################################################
+                    # st.write(request)
+
+                btn_update_ok = False
+                if error_messages:
+                    placeholder_error_empty.error('\n  -'.join(error_messages), icon='🚨')                    
+                    st.session_state.flag_btn_update = True
+                    btn_update_ok = True                        
+                
+                if evento_list:
+                    st.session_state.flag_btn_update = False
+                    on_click_reset_data_editor({'key':'edited_rows'})
+                    
+                    placeholder_btn_cancelar.empty()
+                    placeholder_btn_reset_update.button('Concluir', use_container_width=True)
+                    placeholder_data_editor.success(f'Foram atualizados os seguintes eventos: {", ".join(evento_list)}')
+                    
+                
+                if btn_update_ok: 
+                    placeholder_btn_cancelar.button('Cancelar',
+                                                    type='primary',
+                                                    on_click=on_click_reset_data_editor,
+                                                    kwargs={'key':'edited_rows'},
+                                                    use_container_width=True,
+                                                    key='reset_update_concluir')
+                                                                
+                    placeholder_btn_reset_update.button('Salvar Alterações', 
+                                                        type='primary',
+                                                        on_click=on_click_btn_update,
+                                                        use_container_width=True,
+                                                        key='btn_update')
+                
+
+                            
+                     
+                    
+
 
         if st.session_state[editor_key].get('added_rows'):
             placeholder_alert_empty.error('Adding new records via the board is not allowed, please use the form to add new users.', icon='🚨')
+        
+
     else:
         st.markdown(':red[Atteption! There are no registred planned events.]')
 
 else:
     show_pages(
-        [Page("streamlit_app.py", "PLANEJAMENTO DE EVENTOS", "📅"),]
+        [Page("streamlit_app.py", "CAD-EVENTOS PMMC", "📅"),]
     )
