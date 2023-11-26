@@ -107,6 +107,6 @@ class PlannedEvent(Entity):
             messages.append(f'\tInconsistências nas datas: As datas de início e fim são obrigatórias.')
 
         if len(messages) != 0:
-            messages.insert(0, '**Erro de preenchimento:** O formulário apresentou os seguintes problemas:')
+            messages.insert(0, '**Erro de preenchimento:** O formulário apresentou os seguintes problemas.')
 
         return messages
