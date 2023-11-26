@@ -417,11 +417,12 @@ if authentication_status:
 
 
         if st.session_state[editor_key].get('added_rows'):
-            placeholder_alert_empty.error('Adding new records via the board is not allowed, please use the form to add new users.', icon='🚨')
+            placeholder_alert_empty.error('Não é permitido adicionar novos eventos por meio do quadro! Por favor use o formulário de cadastro.', icon='🚨')
+            
         
 
     else:
-        st.markdown(':red[Atteption! There are no registred planned events.]')
+        st.markdown(f':red[Atenção! Não há eventos cadastrados pelo usuário **{name}**.]')
 
 else:
     show_pages(
