@@ -1,2 +1,2 @@
 from .model.planned_event import PlannedEvent
-from .service.planned_event_repository import PlannedEventRepository
+from .service.plannedevent_repository import PlannedEventRepository

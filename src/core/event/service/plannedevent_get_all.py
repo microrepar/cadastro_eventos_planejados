@@ -3,7 +3,7 @@ from src.core.event import PlannedEvent
 from src.core.shared.application import Result
 from src.core.shared.usecase import UseCase
 
-from .planned_event_repository import PlannedEventRepository
+from .plannedevent_repository import PlannedEventRepository
 
 
 @usecase_map('/planned_event')
