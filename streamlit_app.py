@@ -223,11 +223,11 @@ if authentication_status:
         with cols[1]:
             placeholder_btn_cancelar = st.empty()
 
-        placeholder_btn_reset_update.button('Reset', 
-                                               type='primary',
-                                               on_click=on_click_reset_data_editor,
-                                               use_container_width=True,
-                                               key='reset_update')
+        # placeholder_btn_reset_update.button('Reset', 
+        #                                        type='primary',
+        #                                        on_click=on_click_reset_data_editor,
+        #                                        use_container_width=True,
+        #                                        key='reset_update')
         
         placeholder_alert_empty = st.empty()
         placeholder_error_empty = st.empty()
@@ -265,7 +265,8 @@ if authentication_status:
                     nome_evento = df.iloc[index]['nome']
                     nome_evento_list.append(nome_evento)
             
-                placeholder_text_area.text_area('Evento(s) para exclusão', value='\n'.join(nome_evento_list))
+                placeholder_text_area.text_area('**:red[CONFIRME A EXCLUSÃO DO(S) EVENTO(S) A SEGUIR:]**', 
+                                                value='\n'.join(nome_evento_list))
             
                 placeholder_btn_reset_update.button(f'Confirmar Exclusão', 
                                                     type='primary',
@@ -417,8 +418,13 @@ if authentication_status:
 
 
         if st.session_state[editor_key].get('added_rows'):
-            placeholder_alert_empty.error('Não é permitido adicionar novos eventos por meio do quadro! Por favor use o formulário de cadastro.', icon='🚨')
-            
+            placeholder_alert_empty.error('Não é permitido adicionar novos eventos por meio do quadro! Por favor, clique em cancelar e use o formulário de cadastro.', icon='🚨')
+            placeholder_btn_reset_update.button('Cancelar',
+                                                    type='primary',
+                                                    on_click=on_click_reset_data_editor,
+                                                    kwargs={'key':'added_rows'},
+                                                    use_container_width=True,
+                                                    key='reset_update_concluir')
         
 
     else:
