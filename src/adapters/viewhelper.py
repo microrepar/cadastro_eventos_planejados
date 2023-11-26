@@ -9,6 +9,7 @@ from typing import Any, Dict, List
 
 from src.core.shared.application import Result
 from src.core.shared.entity import Entity
+from src.core.shared.utils import string_to_date
 
 primitive_types = [int, float, str, bool, bytes, datetime.date, dict, set] + Enum.__subclasses__()
 
@@ -51,6 +52,8 @@ class GenericViewHelper(AbstractViewHelper):
                         # TODO: create a function to prepare date value 
                         if param.annotation == type(param_value):
                             kwargs[name] = param_value
+                        elif type(param_value) == str:
+                            kwargs[name] = string_to_date(param_value)
                     else:
                         kwargs[name] = param.annotation(param_value)
                 
