@@ -266,7 +266,8 @@ if authentication_status:
                     nome_evento_list.append(nome_evento)
             
                 placeholder_text_area.text_area('**:red[CONFIRME A EXCLUSÃO DO(S) EVENTO(S) A SEGUIR:]**', 
-                                                value='\n'.join(nome_evento_list))
+                                                value='- ' + '\n- '.join(nome_evento_list),
+                                                disabled=True)
             
                 placeholder_btn_reset_update.button(f'Confirmar Exclusão', 
                                                     type='primary',
