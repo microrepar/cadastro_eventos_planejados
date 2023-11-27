@@ -80,13 +80,19 @@ class PlannedEvent(Entity):
 
         for attr in ['nome', 'tematica', 'data_inicio', 'data_fim' ]:
             value = getattr(self, attr, None)
+
             if value is None:
                 messages.append(
                     f'\tO campo "{attr}" é obrigatório o preenchimento'
                 )
             else:
+                try:                
+                    value = value.strip()                
+                    setattr(self, attr, value)
+                except:
+                    pass
+
                 value = date_to_string(value)
-                value = value.strip()
                 if value == '':
                     messages.append(
                         f'\tO campo "{attr}" é obrigatório o preenchimento'
@@ -110,3 +116,4 @@ class PlannedEvent(Entity):
             messages.insert(0, '**Erro de preenchimento:** O formulário apresentou os seguintes problemas.')
 
         return messages
+    
