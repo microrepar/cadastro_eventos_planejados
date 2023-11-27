@@ -22,7 +22,8 @@ class PlannedEventGetAllTematicas(UseCase):
             plannedevent_list = self.repository.get_all(entity)            
             
             tematica_list = [f"{ev.tematica.upper()}" for ev in plannedevent_list if ev.tematica]
-            result.objects = set(tematica_list)
+            sorted_tematica_list = sorted(list(set(tematica_list)))
+            result.objects = sorted_tematica_list
             
             return result
         except Exception as error:
