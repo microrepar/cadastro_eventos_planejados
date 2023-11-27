@@ -110,10 +110,10 @@ if authentication_status:
     #############################################################
     if tematica_list:
         msg_placeholder = ('Selecione uma temática ou adicione '
-                           'uma nova marcando a caixa acima')
+                           'uma nova marcando a caixa abaixo')
     else:
         msg_placeholder = ('Atenção! Não há temáticas cadastradas, '
-                           'adicione uma marcando a caixa acima')
+                           'adicione uma marcando a caixa abaixo')
     #############################################################
 
     with st.container():
@@ -121,16 +121,18 @@ if authentication_status:
         nome_evento = st.text_input('**Nome do evento**:red[*]')
         organizador = st.text_input('**Organizador**', value=name, disabled=True)
         
+        placeholder_tematica_field = st.empty()
         col1, *col = st.columns(3)
-        if col1.checkbox('Nova temática'):
-            tematica_evento = st.text_input('**Adicione a Temática do Evento**:red[*]', 
+        if col1.checkbox('  Nova temática'):
+            tematica_evento = placeholder_tematica_field.text_input('**Adicione a Temática do Evento**:red[*]', 
                                             placeholder='Adicione aqui a temática, exemplo: "Dia das Crianças" ou "Dia da Consciência Negra", etc...')
         else:            
-            tematica_evento = st.selectbox('**Selecione a Temática do Evento**:red[*]', 
+            tematica_evento = placeholder_tematica_field.selectbox('**Selecione a Temática do Evento**:red[*]', 
                                            tematica_list, 
                                            index=None, 
                                            placeholder=msg_placeholder)
 
+        st.divider()
         col1, col2 = st.columns(2)
         data_inicio = col1.date_input('**Data início**:red[*]', None, format='DD/MM/YYYY')
         data_fim = col2.date_input('**Data fim**:red[*]', None, format='DD/MM/YYYY')
