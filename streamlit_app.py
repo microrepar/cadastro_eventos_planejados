@@ -317,7 +317,7 @@ if authentication_status:
                     placeholder_alert_empty.warning('\n  -'.join(alert_messages), icon='⚠️')
 
                 if nome_evento_list:
-                    placeholder_success_empty.success(f'Foram removidos os seguintes eventos: {", ".join(nome_evento_list)}')
+                    placeholder_success_empty.success(f'**Foram removidos os seguintes eventos:** {", ".join(nome_evento_list)}')
 
 
                 st.session_state[editor_key]['deleted_rows'] = []
@@ -394,7 +394,7 @@ if authentication_status:
                     
                     placeholder_btn_cancelar.empty()
                     placeholder_btn_reset_update.button('Concluir', use_container_width=True)
-                    placeholder_data_editor.success(f'Foram atualizados os seguintes eventos: {", ".join(evento_list)}')
+                    placeholder_data_editor.success(f'**Foram atualizados os seguintes eventos:** {", ".join(evento_list)}')
                     
                 
                 if btn_update_ok: 
