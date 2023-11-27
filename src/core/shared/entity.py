@@ -1,4 +1,5 @@
 import abc
+from typing import List
 
 
 class Entity(abc.ABC):
@@ -9,7 +10,7 @@ class Entity(abc.ABC):
         self.updated_at = updated_at
 
     @abc.abstractmethod
-    def validate_data(self):
+    def validate_data(self) -> List[str]:
         """_summary_
         """
 

@@ -39,7 +39,6 @@ class Result:
             self._objects += list(objs)
         else:
             self._objects += list([objs])
-
         
     @property
     def entities(self) -> entity_list:
