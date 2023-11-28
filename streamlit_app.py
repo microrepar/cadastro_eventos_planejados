@@ -26,6 +26,9 @@ st.set_page_config(page_title="Planned Event Calendar", page_icon=":spiral_calen
 
 placeholder_msg = st.empty()
 
+if 'user_dict' not in st.session_state:
+    st.session_state.user_dict = {}
+
 config_file = Path(__file__).parent / 'src/external/app_pages' / 'config.yaml'
 with config_file.open('rb') as file:
     config = yaml.load(file, Loader=SafeLoader)
@@ -42,14 +45,15 @@ entities = resp['entities']
 #############################################################
 
 credentials = {'usernames': {}}
+user_dict = {}
 if not messages:
-    user_dict = {}
     for user in entities:
         credentials['usernames'].setdefault(user.username, {})
         credentials['usernames'][user.username]['name'] = user.name
         credentials['usernames'][user.username]['email'] = user.email
         credentials['usernames'][user.username]['password'] = user.password
         user_dict[user.username] = user
+    st.session_state.user_dict = user_dict
 else:
     placeholder_msg.warning('\n\n'.join(messages))
 

@@ -50,12 +50,12 @@ class User(Entity):
         return [
             {
                 'id'                : self.id,
-                'username'          : self.username,
-                'created_at'        : self.created_at,
-                'updated_at'        : self.updated_at,
                 'name'              : self.name,
+                'username'          : self.username,
                 'email'             : self.email,
                 'status'            : self.status,
+                'created_at'        : self.created_at,
+                'updated_at'        : self.updated_at,
                 # 'age'             : self.age,
                 # 'password'        : self.password,
                 # 'repeat_password' : self.repeat_password,

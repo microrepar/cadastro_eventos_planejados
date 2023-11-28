@@ -20,13 +20,12 @@ class UserGetAll(UseCase):
             result.msg = f'{entity.__class__.__name__} is not a User Entity.'
 
         if result.qty_msg() > 0:
-            result.entities = entity
             return result
         
         try:
             user_list = self.repository.get_all(entity)
-
-            user_list = [u for u in user_list if u.status != 'removed']
+            if entity.username != 'admin':
+                user_list = [u for u in user_list if u.status != 'removed']
             
             if len(user_list) > 0:
                 result.entities = user_list
@@ -36,8 +35,7 @@ class UserGetAll(UseCase):
 
             return result
         except Exception as error:
-            result.msg = str(error)
-            result.entities = entity
+            result.msg = str(error)            
             return result
 
 
