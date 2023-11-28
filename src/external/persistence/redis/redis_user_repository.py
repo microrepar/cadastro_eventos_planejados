@@ -35,7 +35,7 @@ class UserRepository(UserRepository):
         # Checks if a notebook was inserted
         if not is_inserted:
             raise Exception(
-                f'O username "{entity.username}" já existe. Escolha outro username!'
+                f'The username "{entity.username}" already exists. Choose another username!'
             )
 
         self.set_map_id_username(entity)
@@ -69,17 +69,19 @@ class UserRepository(UserRepository):
     def update(self, entity: User) -> User:
         hash_main = entity.__class__.__name__
 
-        # Verifica se o usuário já existe antes de atualizá-lo
+        # Checks if the user already exists before updating it
         if not self.r.hexists(hash_main, entity.username):
             raise Exception(
-                f'O username "{entity.username}" não existe. Não é possível atualizar.'
+                f'The username "{entity.username}" does not exist. Unable to update.'
             )
         entity.updated_at = datetime.datetime.now()
         user_dict = entity.data_to_redis()
         updated_user = json.dumps(user_dict)
 
         # Atualiza os dados do usuário no Redis
-        self.r.hset(hash_main, entity.username, updated_user)
+        updated_entity = self.r.hset(hash_main, entity.username, updated_user)
+        if updated_entity != 0:
+            raise Exception(f'The user={entity.username} was not updated.')
 
         return entity
 
@@ -116,24 +118,24 @@ class UserRepository(UserRepository):
             user_data = json.loads(value)
             is_match = True
 
-            # Verifica cada parâmetro de palavra-chave fornecido
+            # Checks each given keyword parameter
             for key, expected_value in kwargs.items():
-                # Verifica se o campo existe e se corresponde ao valor esperado
+                # Checks if the field exists and matches the expected value
                 if key not in user_data or user_data[key] != expected_value:
                     is_match = False
-                    break  # Interrompe a verificação se houver uma não correspondência
+                    break  # Stops checking if there is a mismatch
 
             if is_match:
                 user = User(
-                    id_=user_data["id"],
-                    created_at=user_data["created_at"],
-                    status=user_data["status"],
-                    name=user_data["name"],
-                    age=user_data["age"],
-                    email=user_data["email"],
-                    username=user_data["username"],
-                    password=user_data["password"],
-                    repeat_password=user_data["repeat_password"],
+                    id_=user_data.get("id"),
+                    created_at=user_data.get("created_at"),
+                    status=user_data.get("status"),
+                    name=user_data.get("name"),
+                    age=user_data.get("age"),
+                    email=user_data.get("email"),
+                    username=user_data.get("username"),
+                    password=user_data.get("password"),
+                    repeat_password=user_data.get("repeat_password"),
                 )
                 user_list.append(user)
 

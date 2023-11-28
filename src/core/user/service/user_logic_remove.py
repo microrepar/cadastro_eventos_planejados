@@ -15,7 +15,8 @@ class UserLogicRemove(UseCase):
     def execute(self, entity: User) -> Result:
         result = Result()
         
-        user_exists = self.repository.find_by_field(entity)
+        user_filter = User(id_=entity.id)
+        user_exists = self.repository.find_by_field(user_filter)
         
         if not user_exists:
             result.msg = f'Username={entity.username} no exists'

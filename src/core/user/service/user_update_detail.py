@@ -24,15 +24,12 @@ class UserUpdateDetail(UseCase):
             return result
         else:
             user_exists = user_exists[-1]
-            print('>>>>exists>>>>>', user_exists)
         
         filters = dict([v for v in vars(entity).items() if not v[0].startswith('_') and bool(v[-1])])
         kwargs = {}
         for attr, value in filters.items():
             if attr in 'name email status username':
                 kwargs[attr] = value                
-
-        print('>>>>>>>>>>>>>>>', kwargs)
 
         if len(kwargs) == 0:
             result.msg = f'Field is empty.'

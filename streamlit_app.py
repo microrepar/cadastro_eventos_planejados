@@ -19,8 +19,6 @@ from src.adapters import Controller
 # ptvsd.enable_attach(address=('localhost', 5678))
 # ptvsd.wait_for_attach() # Only include this line if you always want to attach the debugger
 
-
-
 # emojis: https://www.webfx.com/tools/emoji-cheat-sheet/
 st.set_page_config(page_title="Planned Event Calendar", page_icon=":spiral_calendar:", layout="wide")
 
@@ -146,8 +144,6 @@ if authentication_status:
         # Every form must have a submit button.
         submitted = st.button("💾 SALVAR", type="primary", use_container_width=True)
 
-
-
     if submitted:
         #############################################################
         ### REGISTRY PLANNEDEVENT ###
@@ -171,7 +167,6 @@ if authentication_status:
         else:
             st.success(f'O Evento **{nome_evento}** foi cadastrado com sucesso.')
         #############################################################
-
 
     st.divider()
     st.markdown('### Eventos Cadastrados')
