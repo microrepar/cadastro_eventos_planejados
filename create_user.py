@@ -1,11 +1,12 @@
 import getpass
+import sys
 
 import streamlit as st
 import streamlit_authenticator as stauth
 
 from config import Config
 from src.adapters import Controller
-import sys
+
 
 def create_user(*args):
     if len(args) == 4:
@@ -42,9 +43,11 @@ def create_user(*args):
     print(f'User {username} created successfully.')
     #############################################################
 
+    if len(args) != 4:
+        exit()
 
 if __name__ == '__main__':
 
     for line in sys.stdin:
-        line = line.rstrip()
+        line = line.rstrip()        
         create_user(*line.split())

@@ -49,14 +49,15 @@ if st.session_state.username:
             #############################################################
             username = next(iter(credentials['usernames']))
             controller = Controller()
-            request    = {'resource': '/user/registry',
-                            'user_username': username,
-                            'user_email': credentials['usernames'][username]['email'],
-                            'user_name': credentials['usernames'][username]['name'],
-                            'user_password': credentials['usernames'][username]['password'],
-                        }
+            request = {
+                'resource'      : '/user/registry',
+                'user_username' : username,
+                'user_email'    : credentials['usernames'][username]['email'],
+                'user_name'     : credentials['usernames'][username]['name'],
+                'user_password' : credentials['usernames'][username]['password'],
+            }
             
-            resp       = controller(request=request)
+            resp = controller(request=request)
 
             messages = resp['messages']
             entities = resp['entities']
@@ -130,17 +131,11 @@ if st.session_state.username:
         with cols[1]:
             placeholder_btn_cancelar = st.empty()
 
-        # placeholder_btn_reset_update.button('Reset', 
-        #                                        type='primary',
-        #                                        on_click=on_click_reset_data_editor,
-        #                                        use_container_width=True,
-        #                                        key='reset_update')
-        
         placeholder_alert_empty = st.empty()
         placeholder_error_empty = st.empty()
         placeholder_success_empty = st.empty()
         
-        disable_fields = ['id', 'created_at', 'updated_at']
+        disable_fields = ['id', 'created_at', 'updated_at', 'username']
         visible_fields = []
             
         if st.session_state.flag_reset:
@@ -363,7 +358,7 @@ if st.session_state.username:
                 'name': st.column_config.TextColumn('Name (required)', required=True),
                 'password': st.column_config.TextColumn('Password'),
                 'username': st.column_config.TextColumn('Username'),
-                'status': st.column_config.SelectboxColumn('Status', options=['active', 'removed']),
+                'status': st.column_config.SelectboxColumn('Status', options=['active', 'removed'], required=True),
                 'email': st.column_config.TextColumn('E-mail (required)'),
             }
 
@@ -410,7 +405,7 @@ if st.session_state.username:
                     error_messages = []
                     alert_messages = []
                     #############################################################
-                    ### DELETE USER BY ID ###
+                    ### ACTIVATE USER BY USERNAME ###
                     #############################################################
                     controller = Controller()
                     request    = {'resource': '/user/activate',
@@ -443,8 +438,12 @@ if st.session_state.username:
                 st.rerun()
                 
 
+            if st.session_state[editor_update_key].get('deleted_rows'):
+                placeholder_alert_empty.error('Removing records by board is not allowed.', icon='🚨')
+                
+
             if st.session_state[editor_update_key].get('added_rows'):
-                placeholder_alert_empty.error('Adding new records via the board is not allowed, please use the form to add new users.', icon='🚨')
+                placeholder_alert_empty.error('Adding new records by board is not allowed, please use the form to add new users.', icon='🚨')
     else:
         st.markdown('### Users')
         st.markdown(':red[Atteption! There are no registred users.]')    
