@@ -54,7 +54,7 @@ authenticator = stauth.Authenticate(
 )
 
 st.session_state['username'] = st.session_state['username']
-st.session_state['user_dict'] = st.session_state['user_dict']
+st.session_state['user_dict'] = st.session_state.get('user_dict', {})
 
 user_dict = st.session_state['user_dict']
 username = st.session_state['username']
