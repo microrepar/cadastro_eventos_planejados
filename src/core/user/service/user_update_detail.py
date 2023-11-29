@@ -28,7 +28,7 @@ class UserUpdateDetail(UseCase):
         filters = dict([v for v in vars(entity).items() if not v[0].startswith('_') and bool(v[-1])])
         kwargs = {}
         for attr, value in filters.items():
-            if attr in 'name email status username':
+            if attr in 'name email status username password':
                 kwargs[attr] = value                
 
         if len(kwargs) == 0:

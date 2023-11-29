@@ -88,12 +88,16 @@ if authentication_status:
                 # Section(name="Notebooks", icon=":books:"),
                 # # Can use :<icon-name>: or the actual icon 
                 Page("src/external/app_pages/user_update.py", "User update", "🔄️"),
+                Page("src/external/app_pages/reset_password.py", "Reset Password", "🔑"),
                 Page("src/external/app_pages/signup.py", "Sign up", "🔑"),
             ]
         )
     else:
         show_pages(
-            [Page("streamlit_app.py", "CAD-EVENTOS PMMC", "📅"),]
+            [
+                Page("streamlit_app.py", "CAD-EVENTOS PMMC", "📅"),
+                Page("src/external/app_pages/reset_password.py", "Reset Password", "🔑"),
+             ]
         )
 
     add_page_title()

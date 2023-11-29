@@ -65,29 +65,22 @@ if st.session_state.username:
 
     try:
         col1, col2 = st.columns(2)
-        selected_username = col1.selectbox('Username', list(credentials['usernames']), index=None)
-        field = col2.selectbox('Field', ['name', 'email'], index=None)
+        if 'admin' == username:
+            selected_username = col1.selectbox('Username', list(credentials['usernames']), index= list(credentials['usernames']).index(username))
+            submited = authenticator.reset_password(selected_username, 'Reset password')
+        else:
+            selected_username = username            
+            submited = authenticator.reset_password(username, 'Reset password')
 
-        new_value = None
-        actual_value = None
-
-        with st.form("my_form"):   
-            st.write("### Update user detail")
-            actual_value = st.text_input('Actual value', 
-                          value=credentials['usernames'].get(selected_username, {}).get(field, ''), 
-                          disabled=True)
-            new_value = st.text_input('New value')
-            # Every form must have a submit button.
-            submitted = st.form_submit_button("UPDATE USER", type="primary")
-
-        if submitted:
+        if submited:
             #############################################################
-            ### UPDATE USER ###
+            ### UPDATE USER PASSWORD ###
             #############################################################
-            request = {'resource': '/user/update_detail',
-                       'user_username': selected_username 
-                       }
-            request.setdefault(f'user_{field}', new_value)
+            request = {
+                'resource'      : '/user/update_detail',
+                'user_username' : selected_username,
+                'user_password' : credentials['usernames'][username]['password'],
+            }            
 
             controller = Controller()
             resp = controller(request=request)
@@ -100,35 +93,35 @@ if st.session_state.username:
                 raise Exception('\n\n'.join(messages))
             #############################################################
 
-            st.success(f'User change {field} from "{actual_value}" to "{new_value}" registred successfully')       
+            st.success(f'User password has been updated successfully')
 
     except Exception as e:
         placeholder_msg.error(e)
         st.error(e)
 
-    #############################################################
-    ### GET ALL USERS ###
-    #############################################################
-    controller = Controller()
-    request    = {'resource': '/user'}
-    resp       = controller(request=request)
-    #############################################################
-    messages = resp['messages']
-    entities = resp['entities']
+    # #############################################################
+    # ### GET ALL USERS ###
+    # #############################################################
+    # controller = Controller()
+    # request    = {'resource': '/user'}
+    # resp       = controller(request=request)
+    # #############################################################
+    # messages = resp['messages']
+    # entities = resp['entities']
 
-    if messages:
-        placeholder_msg.erro('\n\n'.join(messages), icon='🚨')
-    #############################################################
+    # if messages:
+    #     placeholder_msg.erro('\n\n'.join(messages), icon='🚨')
+    # #############################################################
 
-    st.divider()
+    # st.divider()
 
-    if entities:
-        st.markdown('### Users')
-        df = pd.concat([pd.DataFrame(u.data_to_dataframe()) for u in entities], ignore_index=True)
-        st.dataframe(df, hide_index=True, use_container_width=True)
-    else:
-        st.markdown('### Users')
-        st.markdown(':red[Atteption! There are no registred users.]')
+    # if entities:
+    #     st.markdown('### Users')
+    #     df = pd.concat([pd.DataFrame(u.data_to_dataframe()) for u in entities], ignore_index=True)
+    #     st.dataframe(df, hide_index=True, use_container_width=True)
+    # else:
+    #     st.markdown('### Users')
+    #     st.markdown(':red[Atteption! There are no registred users.]')
 
 else:
     st.warning("Please access **[main page](/)** and enter your username and password.")
