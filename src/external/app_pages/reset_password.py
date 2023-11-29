@@ -99,29 +99,5 @@ if st.session_state.username:
         placeholder_msg.error(e)
         st.error(e)
 
-    # #############################################################
-    # ### GET ALL USERS ###
-    # #############################################################
-    # controller = Controller()
-    # request    = {'resource': '/user'}
-    # resp       = controller(request=request)
-    # #############################################################
-    # messages = resp['messages']
-    # entities = resp['entities']
-
-    # if messages:
-    #     placeholder_msg.erro('\n\n'.join(messages), icon='🚨')
-    # #############################################################
-
-    # st.divider()
-
-    # if entities:
-    #     st.markdown('### Users')
-    #     df = pd.concat([pd.DataFrame(u.data_to_dataframe()) for u in entities], ignore_index=True)
-    #     st.dataframe(df, hide_index=True, use_container_width=True)
-    # else:
-    #     st.markdown('### Users')
-    #     st.markdown(':red[Atteption! There are no registred users.]')
-
 else:
     st.warning("Please access **[main page](/)** and enter your username and password.")
