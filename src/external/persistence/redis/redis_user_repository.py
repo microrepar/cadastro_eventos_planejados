@@ -9,7 +9,7 @@ from src.external.persistence import repository_map
 
 
 @repository_map
-class UserRepository(UserRepository):
+class RedisUserRepository(UserRepository):
     def __init__(self):
         self.r = redis.Redis(
             host             = Config.HOST,
