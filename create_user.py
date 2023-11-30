@@ -12,6 +12,14 @@ def create_user(*args):
     if len(args) == 4:
         name, username, email, password = args
         print(f'***CREATE USER {username}***')
+
+    elif len(args) > 0 and args[-1] == 'admin':
+        name     = 'codigo100cera'
+        username = 'admin'
+        email    = 'codigo100cera@gmail.com'
+        password = 'ma180597'
+        print(f'***CREATE USER {username}***')
+
     else:
         print('***CREATE USER***')
         name     = input('name (add your name): ')

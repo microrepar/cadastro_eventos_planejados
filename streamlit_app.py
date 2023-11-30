@@ -51,9 +51,10 @@ if not messages:
         credentials['usernames'][user.username]['email'] = user.email
         credentials['usernames'][user.username]['password'] = user.password
         user_dict[user.username] = user
-    st.session_state.user_dict = user_dict
 else:
     placeholder_msg.warning('\n\n'.join(messages))
+
+st.session_state.user_dict = user_dict
 
 config['credentials'] = credentials
 st.session_state.credentials = credentials
